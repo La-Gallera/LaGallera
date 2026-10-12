@@ -432,7 +432,7 @@
 
 <section class="hero" id="top">
   <div class="wrap hero-inner">
-    <span class="scoreboard">HEREDIA · ABIERTO TODOS LOS DÍAS · 11:00 A.M. – 10:00 P.M.</span>
+    <span class="scoreboard">HEREDIA · ABIERTO TODOS LOS DÍAS · 11:00 A.M. – 12:00 A.M.</span>
     <h1>Buena mesa,<br>buen trago<br>y <span>buen ambiente.</span></h1>
     <p class="lede">En La Gallera se juntan los partidos, el karaoke y la comida de bar bien hecha. Un lugar de barrio en Heredia para llegar en grupo y quedarse un rato.</p>
     <div class="hero-ctas">
@@ -539,7 +539,7 @@
       <h2>¿Cuándo pasar?</h2>
       <div class="ring-card" style="margin-top:24px;">
         <ul class="info-list" style="border:none;">
-          <li style="border-bottom:1px solid var(--line);"><div><div class="lbl">Todos los días</div><div class="val">11:00 a.m. – 10:00 p.m.</div></div></li>
+          <li style="border-bottom:1px solid var(--line);"><div><div class="lbl">Todos los días</div><div class="val">11:00 a.m. – 12:00 a.m.</div></div></li>
         </ul>
         <p style="color:var(--muted);font-size:0.88rem;margin-top:14px;">Recomendación: si buscás una mesa tranquila, llegá antes de las 4 p.m. Para ambiente y karaoke, después de las 6 p.m.</p>
       </div>
@@ -558,10 +558,10 @@
         </div>
       </div>
     </div>
-    <a class="g-card peak-photo" href="ambiente_horario.png" target="_blank">
+    <div class="g-card peak-photo" tabindex="0">
       <img src="ambiente_horario.png" alt="Interior de La Gallera con mesas y pantalla" loading="lazy">
       <span class="g-text"><h3>Nuestro ambiente</h3><p>Mesas cómodas, pantallas y buena música.</p></span>
-    </a>
+    </div>
   </div>
 </section>
 
@@ -652,7 +652,7 @@
         </li>
         <li>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-          <div><div class="lbl">Horario</div><div class="val">Todos los días, 11:00 a.m. – 10:00 p.m.</div></div>
+          <div><div class="lbl">Horario</div><div class="val">Todos los días, 11:00 a.m. – 12:00 a.m.</div></div>
         </li>
         <li>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 5h4l2 5-2.5 1.5a11 11 0 005 5L13 14l5 2v4a2 2 0 01-2.2 2A17 17 0 013 7.2 2 2 0 015 5z"/></svg>
@@ -701,7 +701,7 @@
         <h4>Contacto</h4>
         <ul>
           <li>San Lorenzo, Heredia</li>
-          <li>Todos los días, 11:00 a.m. – 10:00 p.m.</li>
+          <li>Todos los días, 11:00 a.m. – 12:00 a.m.</li>
           <li><a href="tel:+50640825981">Tel. 4082-5981</a></li>
           <li><a href="https://wa.me/50661887820" target="_blank" rel="noopener">Escribir por WhatsApp</a></li>
           <li><a href="https://www.facebook.com/gallerasportbar/" target="_blank" rel="noopener">Facebook</a></li>
@@ -725,13 +725,13 @@
     document.getElementById('navLinks').classList.toggle('open');
   });
 
-  // Open/closed status: 11:00–22:00 every day (edit if hours change)
+  // Open/closed status: 11:00–24:00 every day (edit if hours change)
   (function(){
     const pill=document.getElementById('statusPill');
     const text=document.getElementById('statusText');
     const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'America/Costa_Rica',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date());
     const h=Number(parts.find(p=>p.type==='hour').value)+Number(parts.find(p=>p.type==='minute').value)/60;
-    const open = h>=11 && h<22;
+    const open = h>=11 && h<24;
     text.textContent = open ? 'Abierto ahora' : 'Cerrado ahora';
     if(!open) pill.classList.add('closed');
   })();
