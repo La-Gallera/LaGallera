@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menú digital — Bar Restaurante La Gallera</title>
+<meta name="description" content="Menú de Bar Restaurante La Gallera, Heredia. Elegí una categoría: gustitos, casados, arroces, mariscos, carnes y bebidas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Work+Sans:wght@400;500;600;700;800&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f7f1e3;--card:#ffffff;--card-line:#e8ddc7;
+    --gold:#c9861f;--gold-deep:#9c6b1f;--ember:#a8391f;--ember-soft:#b5432f;
+    --ink:#241a1a;--muted:#6b5d52;--green:#3a7d63;
+    --dark:#1c1520;--darkcard:#241a26;--cream:#f4ead6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--ink);font-family:'Work Sans',sans-serif;}
+  h1,h2,.display{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:0.02em;}
+  a{color:inherit;}
+  button{font-family:inherit;}
+
+  /* HEADER */
+  .top{
+    background:var(--dark);color:var(--cream);
+    padding:16px 18px 14px;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;
+    position:sticky;top:0;z-index:20;
+  }
+  .top .brand{display:flex;align-items:center;gap:8px;font-size:1.15rem;}
+  .top .brand img{width:26px;height:26px;border-radius:50%;object-fit:cover;}
+  .top .sub{color:#c9b8bd;font-size:0.85rem;}
+  .top .sub a{color:var(--gold);font-weight:700;}
+  .top-actions{display:flex;gap:8px;margin-left:auto;}
+  .icon-btn{
+    background:rgba(244,234,214,0.08);border:1px solid rgba(244,234,214,0.2);color:var(--cream);
+    border-radius:8px;padding:7px 11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:0.8rem;
+  }
+  .icon-btn svg{width:15px;height:15px;}
+  .icon-btn.active{background:var(--gold);border-color:var(--gold);color:var(--dark);}
+
+  .top-print{ display:none; }
+
+  /* SEARCH */
+  .search-wrap{padding:18px 18px 8px;max-width:640px;margin:0 auto;}
+  .search-box{position:relative;display:flex;align-items:center;}
+  .search-box svg{position:absolute;left:16px;width:18px;height:18px;color:var(--muted);pointer-events:none;}
+  #search{
+    width:100%;background:var(--card);border:1px solid var(--card-line);color:var(--ink);
+    border-radius:999px;padding:14px 18px 14px 46px;font-size:1rem;font-family:inherit;
+    outline:none;transition:border-color .2s;box-shadow:0 2px 10px rgba(36,26,26,0.05);
+  }
+  #search:focus{border-color:var(--gold);}
+  #search::placeholder{color:var(--muted);}
+
+  main{max-width:900px;margin:0 auto;padding:8px 18px 60px;}
+
+  /* CATEGORY CARD GRID */
+  .intro{text-align:center;padding:18px 4px 22px;}
+  .intro .script{font-family:'Caveat',cursive;font-weight:700;font-size:1.5rem;color:var(--ember-soft);display:block;}
+  .intro h1{font-size:1.7rem;color:var(--ink);margin-top:2px;}
+  .intro p{color:var(--muted);font-size:0.95rem;margin-top:8px;}
+
+  .cat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+  .cat-tile{
+    background:var(--card);border:1px solid var(--card-line);border-radius:14px;overflow:hidden;cursor:pointer;
+    box-shadow:0 2px 10px rgba(36,26,26,0.05);transition:transform .15s, box-shadow .15s;
+    text-align:left;width:100%;display:block;
+  }
+  .cat-tile:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(36,26,26,0.1);}
+  .cat-tile:active{transform:scale(0.98);}
+  .cat-tile .photo{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center 60%;display:block;background:var(--bg);}
+  .cat-tile .icon-photo{
+    width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#efe3c8,var(--bg));
+  }
+  .cat-tile .icon-photo svg{width:34%;height:34%;color:var(--gold-deep);opacity:0.8;}
+  .cat-tile .body{padding:12px 14px 14px;}
+  .cat-tile .name{font-family:'Anton',sans-serif;font-size:1.02rem;color:var(--ink);letter-spacing:0.01em;}
+  .cat-tile .desc{color:var(--muted);font-size:0.78rem;margin-top:3px;line-height:1.4;min-height:2.2em;}
+  .cat-tile .cta{color:var(--ember-soft);font-size:0.82rem;font-weight:700;margin-top:8px;display:flex;align-items:center;gap:4px;}
+
+  @media (min-width:560px){ .cat-grid{grid-template-columns:repeat(3,1fr);} }
+  @media (min-width:820px){
+    main{max-width:1240px;}
+    .cat-grid{grid-template-columns:repeat(4,1fr);}
+  }
+
+  .no-results{text-align:center;color:var(--muted);padding:40px 20px;font-size:1rem;display:none;}
+
+  /* =========================== MODAL FRAME =========================== */
+  .modal-backdrop{
+    position:fixed;inset:0;z-index:50;background:rgba(20,15,17,0.55);backdrop-filter:blur(2px);
+    display:flex;align-items:center;justify-content:center;padding:20px;
+    opacity:0;pointer-events:none;transition:opacity .22s ease;
+  }
+  .modal-backdrop.open{opacity:1;pointer-events:auto;}
+  .modal-frame{
+    background:var(--card);border-radius:18px;width:100%;min-width:0;max-width:600px;max-height:min(82vh,720px);
+    overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 60px rgba(20,15,17,0.4);
+    transform-origin:center center;
+  }
+  .modal-head{display:flex;align-items:center;gap:14px;padding:18px 18px 14px;border-bottom:1px solid var(--card-line);flex-shrink:0;}
+  .modal-photo{width:54px;height:54px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--gold);}
+  .modal-icon{
+    width:54px;height:54px;border-radius:50%;flex-shrink:0;background:var(--bg);
+    display:flex;align-items:center;justify-content:center;border:2px solid var(--gold);
+  }
+  .modal-icon svg{width:27px;height:27px;color:var(--gold-deep);}
+  .modal-title{flex:1;min-width:0;}
+  .modal-title h2{font-size:1.15rem;color:var(--ink);}
+  .modal-title p{color:var(--muted);font-size:0.83rem;margin-top:2px;font-style:italic;}
+  .modal-count{font-size:0.78rem;color:var(--gold-deep);font-weight:700;white-space:nowrap;}
+  .modal-close{
+    width:34px;height:34px;border-radius:50%;background:var(--bg);border:1px solid var(--card-line);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
+  }
+  .modal-close svg{width:16px;height:16px;color:var(--ink);}
+  .modal-body{overflow-y:auto;padding:6px 20px 22px;}
+
+  .subgroup{margin-top:18px;margin-bottom:2px;}
+  .subgroup:first-child{margin-top:6px;}
+  .subgroup h3{font-family:'Caveat',cursive;font-weight:700;font-size:1.35rem;color:var(--ember-soft);}
+
+  .item-wrap{border-bottom:1px solid var(--bg);}
+  .item-wrap:last-child{border-bottom:none;}
+  .item{display:flex;align-items:baseline;gap:8px;padding:11px 0;}
+  .item .name{font-weight:700;color:var(--ink);font-size:1rem;white-space:nowrap;}
+  .item .dots{flex:1;border-bottom:2px dotted #d8cbb0;margin:0 2px;transform:translateY(-4px);}
+  .item .price{font-family:'Anton',sans-serif;color:var(--gold-deep);white-space:nowrap;font-size:1.05rem;}
+  .item .desc{color:var(--muted);font-size:0.83rem;margin-top:-6px;padding-bottom:8px;}
+  .modal-no-match{color:var(--muted);text-align:center;padding:30px 10px;}
+
+  /* PHOTO STRIP (inside modal) */
+  .photo-strip{display:flex;gap:10px;overflow-x:auto;padding:14px 0 8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
+  .photo-strip button{flex:0 0 auto;width:150px;border:none;background:none;padding:0;cursor:zoom-in;text-align:left;scroll-snap-align:start;}
+  .photo-strip img{width:150px;height:112px;object-fit:cover;border-radius:10px;display:block;border:1px solid var(--card-line);background:var(--bg);}
+  .photo-strip span{display:block;font-size:0.75rem;color:var(--muted);margin-top:5px;font-weight:600;line-height:1.3;}
+
+  /* LIGHTBOX */
+  .lightbox{
+    position:fixed;inset:0;z-index:70;background:rgba(15,11,13,0.92);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;
+    opacity:0;pointer-events:none;transition:opacity .2s ease;
+  }
+  .lightbox.open{opacity:1;pointer-events:auto;}
+  .lightbox img{max-width:100%;max-height:78vh;border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,0.5);}
+  .lightbox p{color:var(--cream);font-family:'Anton',sans-serif;text-transform:uppercase;letter-spacing:0.02em;font-size:1.1rem;margin-top:14px;text-align:center;}
+  .lightbox .modal-close{position:absolute;top:16px;right:16px;}
+
+  body.modal-open{overflow:hidden;}
+
+  /* OUTRO */
+  .outro{text-align:center;padding:34px 18px 30px;}
+  .outro .script{font-family:'Caveat',cursive;font-weight:700;font-size:2rem;color:var(--ember-soft);}
+  .outro p{color:var(--muted);margin-top:4px;font-size:0.95rem;}
+  .outro .ctas{display:flex;gap:12px;justify-content:center;margin-top:18px;flex-wrap:wrap;}
+  .outro .btn{
+    display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:999px;
+    font-weight:700;font-size:0.95rem;text-decoration:none;
+  }
+  .outro .btn svg{width:18px;height:18px;}
+  .btn-whatsapp{background:var(--green);color:#fff;}
+  .btn-call{background:var(--dark);color:var(--cream);}
+
+  footer.site-footer{
+    background:var(--dark);color:#c9b8bd;text-align:center;padding:26px 20px;font-size:0.88rem;line-height:1.8;
+  }
+  footer.site-footer strong{color:var(--cream);}
+  footer.site-footer .socials{display:flex;justify-content:center;gap:16px;margin-top:10px;flex-wrap:wrap;}
+  footer.site-footer .socials a{display:inline-flex;align-items:center;gap:6px;color:var(--gold);font-weight:700;font-size:0.88rem;}
+  footer.site-footer .socials svg{width:17px;height:17px;}
+  footer.site-footer .back{display:block;margin-top:16px;color:#8a7d73;font-size:0.82rem;}
+  footer.site-footer .back a{color:var(--gold);}
+
+  html.size-grande{font-size:18px;}
+  html.size-xl{font-size:20px;}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .cat-tile{transition:none;}
+    .modal-backdrop, .modal-frame, .lightbox{transition:none !important;}
+  }
+
+  @media print{
+    @page{ margin: 14mm 12mm; }
+    html{ font-size:12.5pt; }
+    body{ background:#fff !important; }
+    .top, .search-wrap, .no-results, .outro, .modal-backdrop{ display:none !important; }
+    .top-print{ display:block !important; text-align:center; padding-bottom:14px; border-bottom:2px solid var(--gold-deep); margin-bottom:18px; }
+    .top-print .script{ font-family:'Caveat',cursive; font-size:1.5rem; color:var(--ember-soft); }
+    .top-print h1{ font-size:2.1rem; color:var(--ink); }
+    .top-print p{ font-size:0.9rem; color:var(--muted); margin-top:4px; }
+    .cat-grid{ display:none !important; }
+    #printAll{ display:block !important; max-width:100%; padding:0; column-count:2; column-gap:26px; }
+    #printAll .category{ break-inside:avoid; margin-bottom:16px; }
+    #printAll .cat-head{ display:flex;align-items:center;gap:10px;padding:0 0 6px;border-bottom:2px solid var(--gold-deep); }
+    #printAll .cat-photo,#printAll .cat-icon{ width:36px;height:36px; }
+    #printAll h2{ font-size:1.2rem; }
+    footer.site-footer{ display:none; }
+  }
+  #printAll{ display:none; }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="brand">
+    <img src="logo.png" alt="La Gallera">
+    <span>La Gallera</span>
+  </div>
+  <div class="sub"><a href="tel:+50640825981">4082-5981</a></div>
+  <div class="top-actions">
+    <button class="icon-btn active" data-size="normal" title="Letra normal">A</button>
+    <button class="icon-btn" data-size="grande" title="Letra grande">A+</button>
+    <button class="icon-btn" data-size="xl" title="Letra más grande">A++</button>
+    <button class="icon-btn" onclick="window.open('menu-impreso.pdf', '_blank')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"/></svg>
+      Imprimir
+    </button>
+  </div>
+</div>
+
+<div class="top-print">
+  <span class="script">Bar Restaurante</span>
+  <h1>La Gallera</h1>
+  <p>Sport Bar · San Lorenzo, Heredia · Tel. 4082-5981 · Todos los días, 11:00 a.m. – 10:00 p.m.</p>
+</div>
+
+<div class="search-wrap">
+  <div class="search-box">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input type="text" id="search" placeholder="Buscar un plato o bebida… ej. ceviche, cerveza, casado" autocomplete="off">
+  </div>
+</div>
+
+<main id="main">
+  <div class="intro" id="intro">
+    <span class="script">Un vistazo a</span>
+    <h1>¿Qué se te antoja hoy?</h1>
+    <p>Tocá una categoría para verla completa, o buscá directamente arriba.</p>
+  </div>
+  <div class="cat-grid" id="catGrid"></div>
+  <p class="no-results" id="noResults">No encontramos nada con ese nombre. Probá con otra palabra.</p>
+</main>
+
+<!-- hidden full listing, shown only when printing -->
+<div id="printAll"></div>
+
+<div class="outro">
+  <div class="script">Gracias por visitarnos</div>
+  <p>¡Buen ambiente, buenos precios y la mejor atención!</p>
+  <div class="ctas">
+    <a class="btn btn-whatsapp" href="https://wa.me/50661887820?text=Hola%2C%20quisiera%20hacer%20un%20pedido%20o%20reservar%20en%20La%20Gallera" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-8.6 15L2 22l5.2-1.4A10 10 0 1012 2zm0 18a8 8 0 01-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1112 20zm4.4-5.9c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1-1.4-.7-2.3-1.3-3.3-2.9-.2-.4.2-.3.6-1.1.1-.2 0-.4 0-.5L9 8.6c-.1-.2-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.3-.2.2-1 1-1 2.4s1 2.8 1.1 3c.1.2 2 3 4.8 4.2.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.4-.6 1.6-1.1.2-.5.2-1 .1-1.1-.1-.1-.2-.2-.4-.3z"/></svg>
+      Reservar por WhatsApp
+    </a>
+    <a class="btn btn-call" href="tel:+50640825981">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 5h4l2 5-2.5 1.5a11 11 0 005 5L13 14l5 2v4a2 2 0 01-2.2 2A17 17 0 013 7.2 2 2 0 015 5z"/></svg>
+      Llamar
+    </a>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <strong>Bar Restaurante La Gallera</strong> · San Lorenzo, Heredia · Todos los días, 11:00 a.m. – 10:00 p.m.<br>
+  Precios en colones (₡), sujetos a cambio sin previo aviso.
+  <div class="socials">
+    <a href="https://www.facebook.com/gallerasportbar/" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 10-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0022 12z"/></svg>
+      Facebook
+    </a>
+    <a href="tel:+50640825981">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 5h4l2 5-2.5 1.5a11 11 0 005 5L13 14l5 2v4a2 2 0 01-2.2 2A17 17 0 013 7.2 2 2 0 015 5z"/></svg>
+      4082-5981
+    </a>
+  </div>
+  <span class="back"><a href="index.html">← Volver al sitio</a></span>
+</footer>
+
+<!-- MODAL FRAME -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal-frame" id="modalFrame" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <img class="modal-photo" id="modalPhoto" alt="" style="display:none;">
+      <div class="modal-icon" id="modalIconWrap" style="display:none;"></div>
+      <div class="modal-title">
+        <h2 id="modalTitle"></h2>
+        <p id="modalNote" style="display:none;"></p>
+      </div>
+      <span class="modal-count" id="modalCount"></span>
+      <button class="modal-close" id="modalClose" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- LIGHTBOX (foto ampliada de un plato) -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Foto del plato">
+  <button class="modal-close" id="lightboxClose" aria-label="Cerrar foto">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <img id="lightboxImg" alt="">
+  <p id="lightboxCaption"></p>
+</div>
+
+<script>
+const MENU = [
+  {
+    "id": "gustitos",
+    "label": "Gustitos",
+    "title": "Super gustitos",
+    "icon": "flame",
+    "img": "chifrijolito.jpg",
+    "note": "Para picar mientras llega lo demás.",
+    "items": [
+      {
+        "n": "Papas a la francesa",
+        "p": 2500
+      },
+      {
+        "n": "Papa nacho mixto",
+        "p": 4500
+      },
+      {
+        "n": "Papa nacho de carne o pollo",
+        "p": 4000
+      },
+      {
+        "n": "Quesadilla mixta",
+        "p": 4000
+      },
+      {
+        "n": "Quesadilla de carne o pollo",
+        "p": 3500
+      },
+      {
+        "n": "Nachos mixtos",
+        "p": 4000
+      },
+      {
+        "n": "Nachos de carne o pollo",
+        "p": 3500
+      },
+      {
+        "n": "Puntas de lomo",
+        "p": 2000
+      },
+      {
+        "n": "Dados de queso",
+        "p": 2500
+      },
+      {
+        "n": "Palitos de queso",
+        "p": 3000
+      },
+      {
+        "n": "Torta de huevo",
+        "p": 3000
+      },
+      {
+        "n": "Gallo de chorizo",
+        "p": 2000
+      },
+      {
+        "n": "Chifrijolito",
+        "p": 2000
+      },
+      {
+        "n": "Ensalada verde",
+        "p": 2000
+      }
+    ],
+    "imgDish": "Chifrijolito",
+    "fotos": [
+      {
+        "src": "chifrijolito.jpg",
+        "n": "Chifrijolito"
+      }
+    ]
+  },
+  {
+    "id": "boquitas",
+    "label": "Boquitas",
+    "title": "Boquitas",
+    "icon": "plates",
+    "img": "patacones_frijol.jpg",
+    "note": "Porciones chicas, ideales para compartir.",
+    "items": [
+      {
+        "n": "Cazuela de frijol",
+        "p": 1500
+      },
+      {
+        "n": "Chorizo colombiano con arepa",
+        "p": 1500
+      },
+      {
+        "n": "Mini nuggets de pollo",
+        "p": 1500
+      },
+      {
+        "n": "Mini nuggets de pescado",
+        "p": 1500
+      },
+      {
+        "n": "Mini nachos de pollo",
+        "p": 1500
+      },
+      {
+        "n": "Mini nachos de carne",
+        "p": 1500
+      },
+      {
+        "n": "Palitos de queso (3 unid)",
+        "p": 1500
+      },
+      {
+        "n": "Patacones con frijol",
+        "p": 1500
+      }
+    ],
+    "imgDish": "Patacones con frijol",
+    "fotos": [
+      {
+        "src": "patacones_frijol.jpg",
+        "n": "Patacones con frijol"
+      }
+    ]
+  },
+  {
+    "id": "almuerzos",
+    "label": "Almuerzos",
+    "title": "Almuerzos",
+    "icon": "utensils",
+    "img": "casado_pollo.jpg",
+    "note": "Casados de la casa.",
+    "fotos": [
+      {
+        "src": "casado_pollo.jpg",
+        "n": "Casado grande"
+      }
+    ],
+    "items": [
+      {
+        "n": "Casado grande",
+        "p": 3500
+      },
+      {
+        "n": "Casado grande con refresco",
+        "p": 4500
+      },
+      {
+        "n": "Casado pequeño",
+        "p": 2500
+      },
+      {
+        "n": "Casado pequeño con refresco",
+        "p": 3500
+      },
+      {
+        "n": "Bandeja paisa",
+        "p": 7000
+      }
+    ],
+    "imgDish": "Casado grande"
+  },
+  {
+    "id": "arroces",
+    "label": "Arroces",
+    "title": "Arroces",
+    "icon": "bowl",
+    "img": "arroz_marinera.jpg",
+    "items": [
+      {
+        "n": "Arroz Gallera",
+        "p": 4500
+      },
+      {
+        "n": "Arroz con pollo",
+        "p": 4000
+      },
+      {
+        "n": "Arroz a la marinera",
+        "p": 4500
+      },
+      {
+        "n": "Arroz con carne de cerdo",
+        "p": 4000
+      },
+      {
+        "n": "Arroz con carne de res",
+        "p": 4000
+      },
+      {
+        "n": "Arroz con camarones",
+        "p": 4500
+      }
+    ],
+    "imgDish": "Arroz a la marinera",
+    "fotos": [
+      {
+        "src": "arroz_marinera.jpg",
+        "n": "Arroz a la marinera"
+      }
+    ]
+  },
+  {
+    "id": "fuertes",
+    "label": "Platos fuertes",
+    "title": "Platos fuertes",
+    "img": "fb_burger.jpg",
+    "fotos": [
+      {
+        "src": "fb_burger.jpg",
+        "n": "Hamburguesa de carne o pollo"
+      },
+      {
+        "src": "chifrijo.jpg",
+        "n": "Chifrijo"
+      },
+      {
+        "src": "canasta_patacones.jpg",
+        "n": "Canasta de patacones"
+      }
+    ],
+    "items": [
+      {
+        "n": "Empanadas colombianas (5 unid)",
+        "p": 5000
+      },
+      {
+        "n": "Empanadas colombianas (10 unid)",
+        "p": 10000
+      },
+      {
+        "n": "Chifrijo",
+        "p": 4000
+      },
+      {
+        "n": "Fajitas mixtas",
+        "p": 4000
+      },
+      {
+        "n": "Fajitas de carne o pollo",
+        "p": 3500
+      },
+      {
+        "n": "Hamburguesa de carne o pollo",
+        "p": 3500
+      },
+      {
+        "n": "Nachos de carne o pollo",
+        "p": 3500
+      },
+      {
+        "n": "Patacones",
+        "p": 3000
+      },
+      {
+        "n": "Canasta de patacones",
+        "p": 2000
+      },
+      {
+        "n": "Ravioles",
+        "p": 3000
+      },
+      {
+        "n": "Tacos",
+        "p": 3500
+      },
+      {
+        "n": "Yuca frita",
+        "p": 2500
+      }
+    ],
+    "imgDish": "Hamburguesa de carne o pollo"
+  },
+  {
+    "id": "sopas",
+    "label": "Sopas",
+    "title": "Sopas",
+    "icon": "soup",
+    "img": "sopa_carne.jpg",
+    "items": [
+      {
+        "n": "Sopa de carne",
+        "p": 3000
+      },
+      {
+        "n": "Sopa de pollo",
+        "p": 3000
+      },
+      {
+        "n": "Sopa azteca",
+        "p": 4500
+      },
+      {
+        "n": "Sopa de mariscos en agua",
+        "p": 4000
+      },
+      {
+        "n": "Sopa de mariscos en leche",
+        "p": 4500
+      },
+      {
+        "n": "Sopa negra",
+        "p": 3000
+      },
+      {
+        "n": "Sustancia en vaso",
+        "p": 2000
+      }
+    ],
+    "imgDish": "Sopa de carne",
+    "fotos": [
+      {
+        "src": "sopa_carne.jpg",
+        "n": "Sopa de carne"
+      }
+    ]
+  },
+  {
+    "id": "pollo",
+    "label": "Pollo",
+    "title": "Pollo",
+    "img": "pollo_crujiente.jpg",
+    "fotos": [
+      {
+        "src": "pollo_crujiente.jpg",
+        "n": "Nuggets"
+      },
+      {
+        "src": "pechuga_plancha.jpg",
+        "n": "Pechuga"
+      },
+      {
+        "src": "fb_alitas.jpg",
+        "n": "Alitas (12 unid)"
+      }
+    ],
+    "items": [
+      {
+        "n": "Alitas (6 unid)",
+        "p": 4000
+      },
+      {
+        "n": "Alitas (12 unid)",
+        "p": 8000
+      },
+      {
+        "n": "Nuggets",
+        "p": 3500
+      },
+      {
+        "n": "Pechuga",
+        "p": 3500
+      }
+    ],
+    "imgDish": "Nuggets"
+  },
+  {
+    "id": "mariscos",
+    "label": "Mariscos",
+    "title": "Mariscos",
+    "icon": "fish",
+    "img": "ceviche_mixto.jpg",
+    "fotos": [
+      {
+        "src": "ceviche_mixto.jpg",
+        "n": "Ceviche mixto grande"
+      },
+      {
+        "src": "ceviche.jpg",
+        "n": "Ceviche grande"
+      }
+    ],
+    "items": [
+      {
+        "n": "Mariscada",
+        "p": 4500
+      },
+      {
+        "n": "Ceviche grande",
+        "p": 3500
+      },
+      {
+        "n": "Ceviche pequeño",
+        "p": 2000
+      },
+      {
+        "n": "Ceviche mixto grande",
+        "p": 5000
+      },
+      {
+        "n": "Ceviche mixto pequeño",
+        "p": 3000
+      },
+      {
+        "n": "Ceviche salpicón grande",
+        "p": 5000
+      },
+      {
+        "n": "Ceviche salpicón pequeño",
+        "p": 3500
+      },
+      {
+        "n": "Camarones",
+        "p": 5000
+      },
+      {
+        "n": "Filete de pescado",
+        "p": 4000
+      },
+      {
+        "n": "Torta de huevo con camarón",
+        "p": 5000
+      },
+      {
+        "n": "Nuggets de pescado",
+        "p": 3500
+      },
+      {
+        "n": "Espagueti en salsa blanca con camarón",
+        "p": 6000
+      }
+    ],
+    "imgDish": "Ceviche mixto grande"
+  },
+  {
+    "id": "carnes",
+    "label": "Carnes",
+    "title": "Carne",
+    "icon": "meat",
+    "img": "bistec_encebollado.jpg",
+    "fotos": [
+      {
+        "src": "bistec_encebollado.jpg",
+        "n": "Bistec encebollado"
+      }
+    ],
+    "items": [
+      {
+        "n": "Carne mexicana",
+        "p": 3500
+      },
+      {
+        "n": "Carne mexicana pequeña",
+        "p": 2000
+      },
+      {
+        "n": "Bistec encebollado",
+        "p": 3500
+      },
+      {
+        "n": "Hígado encebollado",
+        "p": 3500
+      },
+      {
+        "n": "Chalupa mixta",
+        "p": 4000
+      },
+      {
+        "n": "Chalupa de carne o pollo",
+        "p": 3500
+      },
+      {
+        "n": "Burrito mixto",
+        "p": 4000
+      },
+      {
+        "n": "Burrito de carne o pollo",
+        "p": 3500
+      },
+      {
+        "n": "Surtido 2 personas",
+        "p": 8000
+      },
+      {
+        "n": "Surtido 4 personas",
+        "p": 16000
+      }
+    ],
+    "imgDish": "Bistec encebollado"
+  },
+  {
+    "id": "cortes",
+    "label": "Cortes",
+    "title": "Cortes de carne",
+    "icon": "grill",
+    "img": "lomito.jpg",
+    "fotos": [
+      {
+        "src": "lomito.jpg",
+        "n": "Lomito"
+      },
+      {
+        "src": "churrasco.jpg",
+        "n": "Churrasco"
+      },
+      {
+        "src": "costilla_cerdo.jpg",
+        "n": "Costilla de cerdo"
+      }
+    ],
+    "items": [
+      {
+        "n": "Churrasco",
+        "p": 8000
+      },
+      {
+        "n": "Lomito",
+        "p": 8000
+      },
+      {
+        "n": "Cordon bleu de carne",
+        "p": 6000
+      },
+      {
+        "n": "Cordon bleu de pollo",
+        "p": 6000
+      },
+      {
+        "n": "Chicharrones",
+        "p": 4000
+      },
+      {
+        "n": "Mini boca de chicharrón",
+        "p": 2000
+      },
+      {
+        "n": "Costilla de cerdo",
+        "p": 4000
+      }
+    ],
+    "imgDish": "Lomito"
+  },
+  {
+    "id": "bebidas",
+    "label": "Bebidas",
+    "title": "Bebidas",
+    "img": "fb_balde.jpg",
+    "subgroups": [
+      {
+        "t": "Cócteles preparados",
+        "items": [
+          {
+            "n": "Smirnoff",
+            "d": "Red, Green, Black, Guaraná o Smash Mango · 350ml",
+            "p": 1800
+          },
+          {
+            "n": "Adán y Eva",
+            "d": "Moscow Mule o Frutos Rojos · 350ml",
+            "p": 1500
+          },
+          {
+            "n": "Bamboo",
+            "d": "Daiquirí · 350ml",
+            "p": 1500
+          },
+          {
+            "n": "Cuba libre",
+            "d": "350ml",
+            "p": 1800
+          }
+        ]
+      },
+      {
+        "t": "Cervezas nacionales",
+        "items": [
+          {
+            "n": "Imperial",
+            "d": "Original, Silver, Light, Ultra o Cero · 350ml",
+            "p": 1300
+          },
+          {
+            "n": "Pilsen",
+            "d": "Original o 6.0 · 350ml",
+            "p": 1300
+          }
+        ]
+      },
+      {
+        "t": "Cervezas premium",
+        "items": [
+          {
+            "n": "Bavaria",
+            "d": "Master, Light o Gold · 350ml",
+            "p": 1500
+          },
+          {
+            "n": "Heineken",
+            "d": "Original o 0.0 · 350ml",
+            "p": 1500
+          },
+          {
+            "n": "Coors Light",
+            "d": "350ml",
+            "p": 1500
+          },
+          {
+            "n": "Sol",
+            "d": "Original, Light, Silver, Ultra o Cero · 350ml",
+            "p": 1500
+          },
+          {
+            "n": "Corona",
+            "d": "350ml",
+            "p": 1500
+          }
+        ]
+      },
+      {
+        "t": "Refrescos",
+        "items": [
+          {
+            "n": "Pepsi",
+            "d": "Original o Zero · 350ml",
+            "p": 1200
+          },
+          {
+            "n": "Evervess",
+            "d": "Gin o Soda · 355ml",
+            "p": 1200
+          },
+          {
+            "n": "7UP",
+            "d": "355ml",
+            "p": 1200
+          },
+          {
+            "n": "Tropical",
+            "d": "Arándanos, Frutas Tropicales o Té Melocotón · 355ml",
+            "p": 1100
+          },
+          {
+            "n": "Maxxx Energy",
+            "d": "Guaraná · 355ml",
+            "p": 1900
+          },
+          {
+            "n": "Agua Cristal",
+            "d": "600ml",
+            "p": 1100
+          },
+          {
+            "n": "Maximalta",
+            "p": 1300
+          },
+          {
+            "n": "Vitaloe",
+            "d": "500ml",
+            "p": 1900
+          },
+          {
+            "n": "Jugo de tomate",
+            "p": 1100
+          },
+          {
+            "n": "Coca Cola",
+            "d": "Original · 355ml",
+            "p": 1200
+          },
+          {
+            "n": "Fanta",
+            "d": "Uva, Piña o Naranja · 355ml",
+            "p": 1200
+          },
+          {
+            "n": "Fresca",
+            "d": "Naranja · 355ml",
+            "p": 1200
+          }
+        ]
+      }
+    ],
+    "imgDish": "Pilsen",
+    "fotos": [
+      {
+        "src": "fb_balde.jpg",
+        "n": "Pilsen"
+      }
+    ]
+  },
+  {
+    "id": "especiales",
+    "label": "Especiales",
+    "title": "Especialidades de la casa",
+    "icon": "star",
+    "img": "combo_casado.jpg",
+    "items": [
+      {
+        "n": "Copa de vino de la casa",
+        "p": 3500
+      },
+      {
+        "n": "Copa de sangría de la casa",
+        "p": 3500
+      },
+      {
+        "n": "Trago de la casa",
+        "p": 1100
+      },
+      {
+        "n": "Pepsi + hamburguesa de carne o pollo",
+        "d": "Los mejores sabores",
+        "p": 4500
+      },
+      {
+        "n": "Tropical + casado",
+        "d": "El combo que nunca falla",
+        "p": 4500
+      },
+      {
+        "n": "Baldazo para compartir",
+        "d": "6 Imperial por el precio de 5",
+        "p": 7000
+      }
+    ],
+    "imgDish": "Tropical + casado",
+    "fotos": [
+      {
+        "src": "combo_casado.jpg",
+        "n": "Tropical + casado"
+      }
+    ]
+  }
+];
+
+const ICONS = {
+  bowl: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h18a9 9 0 01-18 0z"/><path d="M12 12V4M12 4c-1.5 0-2 1-2 2M12 4c1.5 0 2 1 2 2"/></svg>',
+  plates: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="8" cy="16" rx="6" ry="3"/><ellipse cx="17" cy="9" rx="5" ry="2.4"/></svg>',
+  flame: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21a6 6 0 006-6c0-2-1-3-2-4 0 2-1 3-2 3s-1.5-1-1.5-2c0-2 1.5-3 .5-6-3 2-5 5-5 9a6 6 0 004 6z"/></svg>',
+  utensils: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.1 13.34l2.83-2.83L3.91 3.5c-1.56 1.56-1.56 4.09 0 5.66l4.19 4.18zm6.78-1.81c1.53.71 3.68.21 5.27-1.38 1.91-1.91 2.28-4.65.81-6.12-1.46-1.46-4.2-1.1-6.12.81-1.59 1.59-2.09 3.74-1.38 5.27L3.7 19.87l1.41 1.41L12 14.41l6.88 6.88 1.41-1.41L13.41 13l1.47-1.47z"/></svg>',
+  soup: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h18a9 9 0 01-18 0z"/><path d="M9 3c0 1-1 1-1 2s1 1 1 2M14 3c0 1-1 1-1 2s1 1 1 2"/></svg>',
+  fish: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 12c4-5 12-5 16 0-4 5-12 5-16 0z"/><circle cx="15" cy="12" r="0.8" fill="currentColor" stroke="none"/><path d="M19 12l3-3v6l-3-3z"/></svg>',
+  meat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4.5 14c0-4.5 3.4-8.5 8-8.5s8 3.5 8 7.5-3.4 7-8 7-8-2.2-8-6z"/><path d="M8.5 10.5l2 5M13 9.5l2 5.5"/></svg>',
+  grill: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h16M4 13h16M4 18h16"/><path d="M8 4v16M16 4v16"/></svg>',
+  star: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7L5.8 21l1.6-7-5.4-4.7 7.1-.6L12 2.5z"/></svg>',
+};
+
+const CAT_DESC = {
+  gustitos:'Para picar en buena compañía.',
+  boquitas:'Bocaditos chicos para compartir.',
+  almuerzos:'Casados completos de la casa.',
+  arroces:'Abundantes, con el sazón de siempre.',
+  fuertes:'Los favoritos de la mesa.',
+  sopas:'Calientitas, para cualquier día.',
+  pollo:'Crujiente y jugoso.',
+  mariscos:'Frescos, con sabor a mar.',
+  carnes:'A la orden, bien sazonadas.',
+  cortes:'Cortes gruesos a la parrilla.',
+  bebidas:'Cervezas, cócteles y refrescos.',
+  especiales:'Los tragos y combos que nos hacen famosos.',
+};
+
+const fmt = n => '₡' + n.toLocaleString('es-CR');
+const countItems = cat => cat.items ? cat.items.length : cat.subgroups.reduce((s,g)=>s+g.items.length,0);
+
+const catGrid = document.getElementById('catGrid');
+const noResults = document.getElementById('noResults');
+const intro = document.getElementById('intro');
+const printAll = document.getElementById('printAll');
+
+function renderItemRow(it){
+  return `
+    <div class="item-wrap" data-name="${it.n.toLowerCase()}">
+      <div class="item">
+        <span class="name">${it.n}</span>
+        <span class="dots"></span>
+        <span class="price">${fmt(it.p)}</span>
+      </div>
+      ${it.d ? `<div class="desc">${it.d}</div>` : ''}
+    </div>`;
+}
+
+function categoryBodyHTML(cat, filterQuery){
+  const q = (filterQuery||'').trim().toLowerCase();
+  const matches = it => !q || it.n.toLowerCase().includes(q);
+  if(cat.items){
+    const filtered = cat.items.filter(matches);
+    if(q && filtered.length===0) return `<p class="modal-no-match">Nada con ese nombre en esta categoría.</p>`;
+    return filtered.map(renderItemRow).join('');
+  } else if(cat.subgroups){
+    const parts = cat.subgroups.map(g=>{
+      const filtered = g.items.filter(matches);
+      if(filtered.length===0) return '';
+      return `<div class="subgroup"><h3>${g.t}</h3></div>${filtered.map(renderItemRow).join('')}`;
+    }).filter(Boolean);
+    if(q && parts.length===0) return `<p class="modal-no-match">Nada con ese nombre en esta categoría.</p>`;
+    return parts.join('');
+  }
+  return '';
+}
+
+function photoStripHTML(cat){
+  if(!cat.fotos || !cat.fotos.length) return '';
+  return `<div class="photo-strip">${cat.fotos.map((f,i)=>`
+    <button type="button" data-foto="${i}" aria-label="Ver foto: ${f.n}">
+      <img src="${f.src}" alt="${f.n}" loading="lazy"><span>${f.n}</span>
+    </button>`).join('')}</div>`;
+}
+
+function modalBodyHTML(cat, query){
+  const q = (query||'').trim();
+  return categoryBodyHTML(cat, q);
+}
+
+MENU.forEach(cat=>{
+  const tile = document.createElement('button');
+  tile.type = 'button';
+  tile.className = 'cat-tile';
+  tile.dataset.id = cat.id;
+  tile.innerHTML = (cat.img
+      ? `<img class="photo" src="${cat.img}" alt="${cat.imgDish || cat.label}" loading="lazy">`
+      : `<div class="icon-photo">${ICONS[cat.icon] || ''}</div>`
+    ) + `<div class="body">
+          <div class="name">${cat.label}</div>
+          <div class="desc">${CAT_DESC[cat.id] || ''}</div>
+          <div class="cta">Ver platos →</div>
+        </div>`;
+  tile.addEventListener('click', ()=> openModal(cat, tile));
+  catGrid.appendChild(tile);
+});
+
+printAll.innerHTML = MENU.map(cat => `
+  <div class="category">
+    <div class="cat-head">
+      ${cat.img ? `<img class="cat-photo" src="${cat.img}" alt="">` : `<div class="cat-icon">${ICONS[cat.icon]||''}</div>`}
+      <h2>${cat.title}</h2>
+    </div>
+    ${categoryBodyHTML(cat, '')}
+  </div>
+`).join('');
+
+const backdrop = document.getElementById('modalBackdrop');
+const frame = document.getElementById('modalFrame');
+const modalPhoto = document.getElementById('modalPhoto');
+const modalIconWrap = document.getElementById('modalIconWrap');
+const modalTitle = document.getElementById('modalTitle');
+const modalNote = document.getElementById('modalNote');
+const modalCount = document.getElementById('modalCount');
+const modalBody = document.getElementById('modalBody');
+const modalClose = document.getElementById('modalClose');
+
+let currentCat = null;
+
+function openModal(cat, originEl){
+  currentCat = cat;
+
+  if(cat.img){
+    modalPhoto.src = cat.img; modalPhoto.alt = cat.imgDish || cat.label; modalPhoto.style.display = '';
+    modalIconWrap.style.display = 'none';
+  } else {
+    modalIconWrap.innerHTML = ICONS[cat.icon] || '';
+    modalIconWrap.style.display = 'flex';
+    modalPhoto.style.display = 'none';
+  }
+  modalTitle.textContent = cat.title;
+  if(cat.note){ modalNote.textContent = cat.note; modalNote.style.display = ''; }
+  else { modalNote.style.display = 'none'; }
+  modalCount.textContent = countItems(cat);
+  modalBody.innerHTML = modalBodyHTML(cat, document.getElementById('search').value);
+  modalBody.scrollTop = 0;
+
+  document.body.classList.add('modal-open');
+  backdrop.classList.add('open');
+
+  const startRect = originEl.getBoundingClientRect();
+  requestAnimationFrame(()=>{
+    const endRect = frame.getBoundingClientRect();
+    const dx = startRect.left + startRect.width/2 - (endRect.left + endRect.width/2);
+    const dy = startRect.top + startRect.height/2 - (endRect.top + endRect.height/2);
+    const sx = startRect.width / endRect.width;
+    const sy = startRect.height / endRect.height;
+    frame.style.transition = 'none';
+    frame.style.transform = `translate(${dx}px,${dy}px) scale(${sx},${sy})`;
+    frame.style.opacity = '0.4';
+    requestAnimationFrame(()=>{
+      frame.style.transition = 'transform .38s cubic-bezier(.2,.8,.2,1), opacity .25s ease';
+      frame.style.transform = 'translate(0,0) scale(1,1)';
+      frame.style.opacity = '1';
+    });
+  });
+
+  document.addEventListener('keydown', onKeydown);
+}
+
+function closeModal(){
+  backdrop.classList.remove('open');
+  document.body.classList.remove('modal-open');
+  document.removeEventListener('keydown', onKeydown);
+}
+
+function onKeydown(e){
+  if(e.key !== 'Escape') return;
+  if(lightbox.classList.contains('open')) closeLightbox();
+  else closeModal();
+}
+
+modalClose.addEventListener('click', closeModal);
+backdrop.addEventListener('click', (e)=>{ if(e.target === backdrop) closeModal(); });
+
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxCaption = document.getElementById('lightboxCaption');
+
+function openLightbox(foto){
+  lightboxImg.src = foto.src;
+  lightboxImg.alt = foto.n;
+  lightboxCaption.textContent = foto.n;
+  lightbox.classList.add('open');
+}
+function closeLightbox(){ lightbox.classList.remove('open'); }
+
+modalBody.addEventListener('click', e=>{
+  const btn = e.target.closest('[data-foto]');
+  if(btn && currentCat && currentCat.fotos) openLightbox(currentCat.fotos[+btn.dataset.foto]);
+});
+document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+lightbox.addEventListener('click', e=>{ if(e.target === lightbox) closeLightbox(); });
+
+document.getElementById('search').addEventListener('input', e=>{
+  const q = e.target.value.trim().toLowerCase();
+  let anyVisible = false;
+  const tiles = document.querySelectorAll('.cat-tile');
+  tiles.forEach(tile=>{
+    const cat = MENU.find(c=>c.id===tile.dataset.id);
+    const allNames = cat.items ? cat.items.map(i=>i.n) : cat.subgroups.flatMap(g=>g.items.map(i=>i.n));
+    const hasMatch = !q || cat.label.toLowerCase().includes(q) || allNames.some(n=>n.toLowerCase().includes(q));
+    tile.style.display = hasMatch ? '' : 'none';
+    if(hasMatch) anyVisible = true;
+  });
+  intro.style.display = q ? 'none' : 'block';
+  noResults.style.display = (!anyVisible && q) ? 'block' : 'none';
+
+  if(currentCat && backdrop.classList.contains('open')){
+    modalBody.innerHTML = modalBodyHTML(currentCat, q);
+  }
+});
+
+document.querySelectorAll('.icon-btn[data-size]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.documentElement.classList.remove('size-grande','size-xl');
+    if(btn.dataset.size === 'grande') document.documentElement.classList.add('size-grande');
+    if(btn.dataset.size === 'xl') document.documentElement.classList.add('size-xl');
+    document.querySelectorAll('.icon-btn[data-size]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
